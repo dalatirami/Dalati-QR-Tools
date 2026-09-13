@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dalati QR Tools</title>
+  <meta name="description" content="Free, fast, and secure client-side QR Code Generator and Reader. Create, customize, and decode QR codes instantly in your browser without uploading data to a server." />
+  <meta name="keywords" content="QR code generator, QR reader, custom QR code, SVG QR code, client-side QR, Dalati QR Tools" />
+  <meta name="author" content="Rami Dalati" />
+  <meta name="theme-color" content="#1B011E" />
+  <link rel="canonical" href="https://qr.dalati.org" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dalati QR Tools — Generator & Reader" />
+  <meta property="og:description" content="Free, fast, and secure client-side QR Code Generator and Reader. Create, customize, and decode QR codes instantly in your browser without uploading data to a server." />
+  <meta property="og:image" content="/og-image.png" />
+  <meta property="og:url" content="https://qr.dalati.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dalati QR Tools — Generator & Reader" />
+  <meta name="twitter:description" content="Free, fast, and secure client-side QR Code Generator and Reader. Create, customize, and decode QR codes instantly in your browser without uploading data to a server." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <!-- ============ APP HEADER ============ -->
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <img src="logo.webp" alt="Dalati QR Tools logo" class="logo-mark" width="40" height="40" />
+        <div>
+          <h1>Dalati QR Tools</h1>
+          <p>Generator & Reader</p>
+        </div>
+      </div>
+      <button id="themeToggle" class="btn ghost" type="button">☀️ Light Mode</button>
+    </div>
+    <nav class="wrap tabs" role="tablist" aria-label="App sections">
+      <button class="tab active" id="tabGen" role="tab" aria-selected="true" aria-controls="sectionGen" type="button">⚙️ Generator</button>
+      <button class="tab" id="tabRead" role="tab" aria-selected="false" aria-controls="sectionRead" type="button">📷 Reader</button>
+    </nav>
+  </header>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="wrap">
+    <!-- ============ SECTION A : GENERATOR ============ -->
+    <div id="sectionGen" role="tabpanel" aria-labelledby="tabGen">
+      <div class="layout">
+        <!-- Panel 1: Content & Customization -->
+        <section class="card" aria-label="QR customization">
+          <h2>1. Content & Style</h2>
+          <div class="tpl-tabs" role="tablist" aria-label="Data type">
+            <button class="tpl-tab active" type="button" data-tpl="text" role="tab" aria-selected="true">Text / URL</button>
+            <button class="tpl-tab" type="button" data-tpl="wifi" role="tab" aria-selected="false">Wi-Fi</button>
+            <button class="tpl-tab" type="button" data-tpl="crypto" role="tab" aria-selected="false">Crypto Address</button>
+            <button class="tpl-tab" type="button" data-tpl="vcard" role="tab" aria-selected="false">vCard</button>
+          </div>
+
+          <!-- Template: Text / URL -->
+          <div id="tplText">
+            <label class="field">
+              <span class="label">Text / URL</span>
+              <textarea id="textInput" rows="3" placeholder="https://example.com" spellcheck="false"></textarea>
+              <small class="hint"><span id="charCount">0</span> characters • Live preview</small>
+            </label>
+          </div>
+
+          <!-- Template: Wi-Fi -->
+          <div id="tplWifi" hidden>
+            <div class="field">
+              <span class="label">Wi-Fi network name (SSID)</span>
+              <input type="text" id="wifiSsid" placeholder="MyNetwork" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span class="label">Password</span>
+                <input type="text" id="wifiPass" placeholder="Password" autocomplete="off" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span class="label">Encryption</span>
+                <select id="wifiEnc">
+                  <option value="WPA" selected>WPA / WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">None (open)</option>
+                </select>
+              </label>
+            </div>
+            <small class="hint">Generates a WIFI: string your phone camera can join from.</small>
+          </div>
+
+          <!-- Template: Crypto Address -->
+          <div id="tplCrypto" hidden>
+            <label class="field">
+              <span class="label">Wallet address</span>
+              <textarea id="cryptoAddr" rows="3" class="mono" placeholder="Paste your full wallet address exactly…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+              <small class="hint">Exact value is encoded — double-check every character.</small>
+            </label>
+          </div>
+
+          <!-- Template: vCard Contact -->
+          <div id="tplVcard" hidden>
+            <div class="field">
+              <span class="label">Full name</span>
+              <input type="text" id="vName" placeholder="Jane Doe" autocomplete="off" />
+            </div>
+            <div class="grid2">
+              <label class="field">
+                <span class="label">Phone</span>
+                <input type="text" id="vPhone" placeholder="+1 555 123 4567" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span class="label">Email</span>
+                <input type="text" id="vEmail" placeholder="jane@example.com" autocomplete="off" />
+              </label>
+            </div>
+            <small class="hint">Generates a standard vCard contact.</small>
+          </div>
+
+          <!-- Collapsible Advanced Customization -->
+          <details class="adv-accordion">
+            <summary class="adv-toggle">⚙️ Advanced Options</summary>
+            <div class="adv-body">
+              <div class="grid2">
+                <label class="field">
+                  <span class="label">Dots color</span>
+                  <div class="color-row">
+                    <input type="color" id="dotsColor" value="#000000" />
+                    <input type="text" id="dotsColorHex" value="#000000" maxlength="7" spellcheck="false" />
+                  </div>
+                </label>
+                <label class="field">
+                  <span class="label">Background color</span>
+                  <div class="color-row">
+                    <input type="color" id="bgColor" value="#ffffff" />
+                    <input type="text" id="bgColorHex" value="#ffffff" maxlength="7" spellcheck="false" />
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span class="label">Dot style</span>
+                  <select id="dotStyle">
+                    <option value="square" selected>Square (standard)</option>
+                    <option value="rounded">Rounded</option>
+                    <option value="extra-rounded">Extra rounded</option>
+                    <option value="dots">Dots</option>
+                    <option value="classy">Classy</option>
+                    <option value="classy-rounded">Classy rounded</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="label">Error correction</span>
+                  <select id="ecLevel">
+                    <option value="L">L (Low)</option>
+                    <option value="M" selected>M (Medium)</option>
+                    <option value="Q">Q (Quartile)</option>
+                    <option value="H">H (High)</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="grid2">
+                <label class="field">
+                  <span class="label">Corner style</span>
+                  <select id="cornerStyle">
+                    <option value="square" selected>Square</option>
+                    <option value="extra-rounded">Extra rounded</option>
+                    <option value="dot">Dot</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="label">Corner inner dot</span>
+                  <select id="cornerDotStyle">
+                    <option value="square" selected>Square</option>
+                    <option value="dot">Dot</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="field">
+                <span class="label">Export size</span>
+                <select id="qrSize">
+                  <option value="300">300 × 300</option>
+                  <option value="500">500 × 500</option>
+                  <option value="800">800 × 800</option>
+                  <option value="1000" selected>1000 × 1000</option>
+                  <option value="1500">1500 × 1500</option>
+                  <option value="2000">2000 × 2000</option>
+                  <option value="2500">2500 × 2500 (print quality)</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <span class="label">Center logo (optional)</span>
+                <div class="upload-box">
+                  <input type="file" id="logoInput" accept="image/*" hidden />
+                  <button class="btn secondary" type="button" id="logoBtn">Upload logo</button>
+                  <button class="btn ghost" type="button" id="logoRemove" disabled>Remove</button>
+                </div>
+                <small class="hint" id="logoName">No logo selected. PNG with transparency works best.</small>
+                <img id="logoPreview" alt="" hidden />
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <!-- Panel 2: Live Preview & Download -->
+        <section class="card" aria-label="Preview and download">
+          <h2>2. Live Preview</h2>
+          <div id="qrPreview" class="qr-preview" role="img" aria-label="QR code preview"></div>
+          <p class="preview-data" id="previewData">(empty — showing placeholder)</p>
+          <h3>Download</h3>
+          <div class="dl-grid">
+            <button class="btn primary" type="button" data-dl="png">PNG</button>
+            <button class="btn primary" type="button" data-dl="jpeg">JPG</button>
+            <button class="btn primary" type="button" data-dl="svg">SVG</button>
+            <button class="btn primary" type="button" data-dl="webp">WEBP</button>
+          </div>
+          <small class="hint">Exports use current colors, shape, logo and size.</small>
+        </section>
+
+        <!-- Panel 3: Bulk QR Code Generation -->
+        <section class="card full" aria-label="Bulk generation">
+          <h2>3. Bulk generation — one per line (max 10)</h2>
+          <label class="field">
+            <span class="label">Paste URLs / texts, one per line</span>
+            <textarea id="bulkInput" rows="5" placeholder="https://site.com/1&#10;https://site.com/2&#10;Hello World" spellcheck="false"></textarea>
+            <small class="hint"><span id="bulkCount">0</span> / 10 items</small>
+          </label>
+          <div class="upload-box">
+            <button class="btn primary" type="button" id="bulkBtn">Generate bulk QR codes</button>
+            <button class="btn ghost" type="button" id="bulkClear" disabled>Clear</button>
+          </div>
+          <div id="bulkError" class="error" role="alert" hidden></div>
+          <div id="batchGrid" class="batch-grid"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============ SECTION B : READER ============ -->
+    <div id="sectionRead" role="tabpanel" aria-labelledby="tabRead" hidden>
+      <div class="layout single">
+        <section class="card" aria-label="QR reader">
+          <h2>QR Reader — decode an image</h2>
+          <p class="hint">Drop a QR code image below, choose a file, or scan with your camera.</p>
+          
+          <div id="dropZone" class="dropzone" tabindex="0" role="button" aria-label="Drop a QR image here or press Enter to upload">
+            <input type="file" id="decodeInput" accept="image/*" hidden />
+            <div class="dz-icon" aria-hidden="true">📷</div>
+            <p class="dz-title"><strong>Drag & drop a QR image here</strong></p>
+            <p class="hint">or click to choose a file</p>
+            <div class="dz-preview-wrap">
+              <div id="decodePreviewWrap" class="dz-preview"><span class="hint">No image yet</span></div>
+            </div>
+          </div>
+
+          <div class="reader-actions">
+            <button class="btn ghost" type="button" id="uploadBtn">📁 Upload Image</button>
+            <button class="btn primary" type="button" id="camStart">Scan with Camera</button>
+          </div>
+
+          <div id="cameraBox" class="camera-box" hidden>
+            <div id="qr-reader" class="qr-reader"></div>
+            <div class="upload-box mt-10">
+              <button class="btn ghost" type="button" id="camStop">Stop camera</button>
+            </div>
+          </div>
+
+          <div id="camError" class="error" role="alert" hidden></div>
+
+          <div class="field mt-12">
+            <span class="label">Decoded result</span>
+            <div id="decodeResult" class="result-box">No QR decoded yet.</div>
+            <div class="upload-box mt-10">
+              <button class="btn secondary" type="button" id="copyResult" disabled>Copy result</button>
+              <a class="btn ghost" id="openResult" href="#" target="_blank" rel="noopener" hidden>Open link ↗</a>
+            </div>
+            <div id="decodeError" class="error" role="alert" hidden></div>
+            <canvas id="decodeCanvas" hidden></canvas>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ APP FOOTER ============ -->
+  <footer class="wrap footer">
+    <p>Designed & Developed by <a href="https://rami.dalati.org/" target="_blank" rel="noopener noreferrer" class="footer-link">Rami Dalati</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
